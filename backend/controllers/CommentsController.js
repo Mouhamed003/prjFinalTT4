@@ -1,12 +1,10 @@
 const { Comment, User, Post, Like } = require('../models');
 
 class CommentsController {
-  // Create new comment
   static async createComment(req, res) {
     try {
       const { content, postId } = req.body;
 
-      // Check if post exists
       const post = await Post.findByPk(postId);
       if (!post) {
         return res.status(404).json({ error: 'Post not found' });
@@ -18,7 +16,6 @@ class CommentsController {
         userId: req.user.id
       });
 
-      // Fetch the comment with author information
       const commentWithAuthor = await Comment.findByPk(comment.id, {
         include: [
           {
@@ -38,7 +35,6 @@ class CommentsController {
     }
   }
 
-  // Get comments for a post
   static async getPostComments(req, res) {
     try {
       const { postId } = req.params;
@@ -71,8 +67,6 @@ class CommentsController {
       res.status(400).json({ error: error.message });
     }
   }
-
-  // Update comment
   static async updateComment(req, res) {
     try {
       const { id } = req.params;
@@ -84,7 +78,6 @@ class CommentsController {
         return res.status(404).json({ error: 'Comment not found' });
       }
 
-      // Check if user owns the comment
       if (comment.userId !== req.user.id) {
         return res.status(403).json({ error: 'You can only edit your own comments' });
       }
@@ -110,7 +103,6 @@ class CommentsController {
     }
   }
 
-  // Delete comment
   static async deleteComment(req, res) {
     try {
       const { id } = req.params;
@@ -120,8 +112,6 @@ class CommentsController {
       if (!comment) {
         return res.status(404).json({ error: 'Comment not found' });
       }
-
-      // Check if user owns the comment
       if (comment.userId !== req.user.id) {
         return res.status(403).json({ error: 'You can only delete your own comments' });
       }
@@ -134,7 +124,6 @@ class CommentsController {
     }
   }
 
-  // Get single comment
   static async getComment(req, res) {
     try {
       const { id } = req.params;

@@ -18,18 +18,18 @@ app.use('/api', routes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Social Media API is running' });
+  res.json({ status: 'OK', message: 'API des médias sociaux fonctionne' });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  res.status(500).json({ error: 'Quelque chose sest mal passé !' });
 });
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  res.status(404).json({ error: 'Route introuvable' });
 });
 
 // Initialize database and start server
@@ -37,11 +37,11 @@ async function startServer() {
   try {
     // Test database connection
     await sequelize.authenticate();
-    console.log('Database connection established successfully.');
+    console.log('Connexion à la base de données établie avec succès.');
 
     // Sync database (create tables)
     await sequelize.sync({ force: false }); // Set to true to recreate tables
-    console.log('Database synchronized successfully.');
+    console.log('Base de données synchronisée avec succès.');
 
     // Start server
     app.listen(PORT, () => {

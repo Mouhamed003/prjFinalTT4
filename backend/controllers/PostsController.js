@@ -1,7 +1,6 @@
 const { Post, User, Comment, Like } = require('../models');
 
 class PostsController {
-  // Create new post
   static async createPost(req, res) {
     try {
       const { title, content, imageUrl } = req.body;
@@ -13,7 +12,6 @@ class PostsController {
         userId: req.user.id
       });
 
-      // Fetch the post with author information
       const postWithAuthor = await Post.findByPk(post.id, {
         include: [
           {
@@ -33,7 +31,6 @@ class PostsController {
     }
   }
 
-  // Get all posts
   static async getAllPosts(req, res) {
     try {
       const posts = await Post.findAll({
@@ -122,7 +119,6 @@ class PostsController {
     }
   }
 
-  // Update post
   static async updatePost(req, res) {
     try {
       const { id } = req.params;
@@ -131,12 +127,11 @@ class PostsController {
       const post = await Post.findByPk(id);
 
       if (!post) {
-        return res.status(404).json({ error: 'Post not found' });
+        return res.status(404).json({ error: 'Le post est instrouvable' });
       }
 
-      // Check if user owns the post
       if (post.userId !== req.user.id) {
-        return res.status(403).json({ error: 'You can only edit your own posts' });
+        return res.status(403).json({ error: 'Vous ne pouvez modifier que vos propres publications.' });
       }
 
       await post.update({ title, content, imageUrl });
@@ -168,12 +163,12 @@ class PostsController {
       const post = await Post.findByPk(id);
 
       if (!post) {
-        return res.status(404).json({ error: 'Post not found' });
+        return res.status(404).json({ error: 'Le post est instrouvable' });
       }
 
       // Check if user owns the post
       if (post.userId !== req.user.id) {
-        return res.status(403).json({ error: 'You can only delete your own posts' });
+        return res.status(403).json({ error: 'Vous ne pouvez supprimer que vos propres publications.' });
       }
 
       await post.destroy();
