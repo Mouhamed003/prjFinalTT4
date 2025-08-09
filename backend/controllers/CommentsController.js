@@ -30,7 +30,7 @@ class CommentsController {
       });
 
       res.status(201).json({
-        message: 'Comment created successfully',
+        message: 'Commentaire créé avec succès',
         comment: commentWithAuthor
       });
     } catch (error) {
@@ -102,7 +102,7 @@ class CommentsController {
       });
 
       res.json({
-        message: 'Comment updated successfully',
+        message: 'Commentaire mis à jour avec succès',
         comment: updatedComment
       });
     } catch (error) {
@@ -128,7 +128,7 @@ class CommentsController {
 
       await comment.destroy();
 
-      res.json({ message: 'Comment deleted successfully' });
+      res.json({ message: 'Commentaire supprimé avec succès' });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

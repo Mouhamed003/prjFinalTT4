@@ -1,5 +1,6 @@
 const { User } = require('../models');
 const { generateToken } = require('../middleware/auth');
+const { Op } = require('sequelize');
 
 class UsersController {
   // Register new user
@@ -10,12 +11,12 @@ class UsersController {
       // Check if user already exists
       const existingUser = await User.findOne({
         where: {
-          $or: [{ email }, { username }]
+          [Op.or]: [{ email }, { username }]
         }
       });
 
       if (existingUser) {
-        return res.status(400).json({ error: 'User with this email or username already exists' });
+        return res.status(400).json({ error: 'Utilisateur avec cette email ou password existe deja' });
       }
 
       // Create new user
@@ -35,7 +36,7 @@ class UsersController {
       const { password: _, ...userWithoutPassword } = user.toJSON();
 
       res.status(201).json({
-        message: 'User created successfully',
+        message: 'Utilisateur inscrit avec succès',
         user: userWithoutPassword,
         token
       });
@@ -53,7 +54,7 @@ class UsersController {
       const user = await User.findOne({ where: { email } });
 
       if (!user || !(await user.validatePassword(password))) {
-        return res.status(401).json({ error: 'Invalid email or password' });
+        return res.status(401).json({ error: 'email ou password invalide' });
       }
 
       // Generate token
@@ -63,7 +64,7 @@ class UsersController {
       const { password: _, ...userWithoutPassword } = user.toJSON();
 
       res.json({
-        message: 'Login successful',
+        message: 'Connexion réussie',
         user: userWithoutPassword,
         token
       });
@@ -96,7 +97,7 @@ class UsersController {
 
       const { password: _, ...userWithoutPassword } = req.user.toJSON();
       res.json({
-        message: 'Profile updated successfully',
+        message: 'Profil mis à jour avec succès',
         user: userWithoutPassword
       });
     } catch (error) {
@@ -113,7 +114,8 @@ class UsersController {
 
       res.json({ users });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      console.error('Erreur de récupération des utilisateurs:', error);
+      res.status(500).json({ error: 'Erreur interne du serveur' });
     }
   }
 }

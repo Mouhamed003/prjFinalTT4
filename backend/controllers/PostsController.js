@@ -25,7 +25,7 @@ class PostsController {
       });
 
       res.status(201).json({
-        message: 'Post created successfully',
+        message: 'Post créé avec succès',
         post: postWithAuthor
       });
     } catch (error) {
@@ -152,7 +152,7 @@ class PostsController {
       });
 
       res.json({
-        message: 'Post updated successfully',
+        message: 'Post mis à jour avec succès',
         post: updatedPost
       });
     } catch (error) {
@@ -178,7 +178,7 @@ class PostsController {
 
       await post.destroy();
 
-      res.json({ message: 'Post deleted successfully' });
+      res.json({ message: 'Post supprimé avec succès' });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

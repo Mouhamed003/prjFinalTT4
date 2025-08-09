@@ -1,0 +1,142 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Réseau Social</h1>
+      <div class="user-info" *ngIf="currentUser">
+        <span>Bonjour, {{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+        <button class="btn btn-outline" (click)="logout()">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Create Post Section -->
+    <div class="create-post-section">
+      <button 
+        class="btn btn-primary create-post-btn" 
+        (click)="showCreatePost = !showCreatePost"
+      >
+        {{ showCreatePost ? 'Annuler' : 'Créer un post' }}
+      </button>
+
+      <div class="create-post-form" *ngIf="showCreatePost">
+        <div class="form-group">
+          <input 
+            type="text" 
+            [(ngModel)]="newPost.title"
+            placeholder="Titre de votre post..."
+            class="form-control"
+          >
+        </div>
+        <div class="form-group">
+          <textarea 
+            [(ngModel)]="newPost.content"
+            placeholder="Que voulez-vous partager?"
+            class="form-control"
+            rows="4"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <input 
+            type="url" 
+            [(ngModel)]="newPost.imageUrl"
+            placeholder="URL de l'image (optionnel)"
+            class="form-control"
+          >
+        </div>
+        <button 
+          class="btn btn-primary" 
+          (click)="createPost()"
+          [disabled]="!newPost.title || !newPost.content"
+        >
+          Publier
+        </button>
+      </div>
+    </div>
+
+    <!-- Posts Feed -->
+    <div class="posts-feed">
+      <div class="loading" *ngIf="isLoading">
+        Chargement des posts...
+      </div>
+
+      <div class="post-card" *ngFor="let post of posts; trackBy: trackByPostId">
+        <!-- Post Header -->
+        <div class="post-header">
+          <div class="author-info">
+            <div class="author-avatar">
+              {{ post.author?.firstName?.charAt(0) }}{{ post.author?.lastName?.charAt(0) }}
+            </div>
+            <div class="author-details">
+              <h4>{{ post.author?.firstName }} {{ post.author?.lastName }}</h4>
+              <span class="username">{{ getUsername(post.author?.username) }}</span>
+              <span class="post-date">{{ formatDate(post.createdAt) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-content">
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.content }}</p>
+          <img *ngIf="post.imageUrl" [src]="post.imageUrl" alt="Post image" class="post-image">
+        </div>
+
+        <!-- Post Actions -->
+        <div class="post-actions">
+          <button 
+            class="action-btn like-btn" 
+            [class.liked]="isLikedByCurrentUser(post)"
+            (click)="toggleLike(post.id)"
+          >
+            <span class="icon">❤️</span>
+            <span>{{ getLikesCount(post) }}</span>
+          </button>
+          
+          <span class="action-info">
+            <span class="icon">💬</span>
+            <span>{{ getCommentsCount(post) }} commentaires</span>
+          </span>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+          <!-- Add Comment -->
+          <div class="add-comment">
+            <input 
+              type="text" 
+              [(ngModel)]="newComment[post.id]"
+              placeholder="Ajouter un commentaire..."
+              class="comment-input"
+              (keyup.enter)="addComment(post.id)"
+            >
+            <button 
+              class="btn btn-sm btn-primary" 
+              (click)="addComment(post.id)"
+              [disabled]="!newComment[post.id]"
+            >
+              Commenter
+            </button>
+          </div>
+
+          <!-- Comments List -->
+          <div class="comments-list" *ngIf="post.comments && post.comments.length > 0">
+            <div class="comment" *ngFor="let comment of post.comments; trackBy: trackByCommentId">
+              <div class="comment-author">
+                <span class="author-name">{{ comment.author?.firstName }} {{ comment.author?.lastName }}</span>
+                <span class="comment-date">{{ formatDate(comment.createdAt) }}</span>
+              </div>
+              <p class="comment-content">{{ comment.content }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-posts" *ngIf="!isLoading && posts.length === 0">
+        <p>Aucun post à afficher. Soyez le premier à publier quelque chose!</p>
+      </div>
+    </div>
+  </main>
+</div>

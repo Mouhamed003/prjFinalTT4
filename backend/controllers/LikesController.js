@@ -21,11 +21,11 @@ class LikesController {
       if (existingLike) {
         // Unlike the post
         await existingLike.destroy();
-        res.json({ message: 'Post unliked successfully', liked: false });
+        res.json({ message: 'Post retiré des favoris avec succès', liked: false });
       } else {
         // Like the post
         await Like.create({ userId, postId });
-        res.json({ message: 'Post liked successfully', liked: true });
+        res.json({ message: 'Post ajouté aux favoris avec succès', liked: true });
       }
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -52,11 +52,11 @@ class LikesController {
       if (existingLike) {
         // Unlike the comment
         await existingLike.destroy();
-        res.json({ message: 'Comment unliked successfully', liked: false });
+        res.json({ message: 'Commentaire retiré des favoris avec succès', liked: false });
       } else {
         // Like the comment
         await Like.create({ userId, commentId });
-        res.json({ message: 'Comment liked successfully', liked: true });
+        res.json({ message: 'Commentaire ajouté aux favoris avec succès', liked: true });
       }
     } catch (error) {
       res.status(400).json({ error: error.message });
